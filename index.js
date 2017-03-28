@@ -2,7 +2,9 @@ global.request = require("request");
 global.cheerio = require('cheerio');
 request = request.defaults({jar: true});
 global.mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/stevens-scheduler');
+var config = JSON.parse(process.env.APP_CONFIG);
+var mongoPassword = 'Daniel1011';
+mongoose.connect("mongodb://" + config.mongo.user + ":" + mongoPassword + "@" + config.mongo.hostString);
 global.db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
