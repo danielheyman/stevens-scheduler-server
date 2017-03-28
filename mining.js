@@ -1,8 +1,8 @@
 module.exports = function(term) {
     var findingNewSession = {};
 
-    function newSession(session, subject, cb) {
-        if(findingNewSession[subject]) {
+    function newSession(session, subject, cb, force) {
+        if(findingNewSession[subject] && !force) {
             var waitForSession = function() {
                 if(findingNewSession[subject]) setTimeout(waitForSession, 50);
                 else cb();
@@ -22,7 +22,7 @@ module.exports = function(term) {
         
         request(options, function(error, response, body) {
             if (error) {
-                newSession(session, subject, cb);
+                newSession(session, subject, cb, true);
                 return console.log(error);
             }
             cb();
