@@ -1,22 +1,40 @@
 global.request = require("request");
 global.cheerio = require('cheerio');
-request = request.defaults({jar: true});
+request = request.defaults({
+    jar: true
+});
 global.mongoose = require('mongoose');
-var config = JSON.parse(process.env.APP_CONFIG);
-var mongoPassword = 'Daniel1011';
-mongoose.connect("mongodb://" + config.mongo.user + ":" + mongoPassword + "@" + config.mongo.hostString);
+if (process.env.APP_CONFIG) {
+    var config = JSON.parse(process.env.APP_CONFIG);
+    var mongoPassword = 'Daniel1011';
+    mongoose.connect("mongodb://" + config.mongo.user + ":" + mongoPassword + "@" + config.mongo.hostString);
+} else {
+    mongoose.connect('mongodb://localhost/stevens-scheduler');
+}
 global.db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('connected to db');
 });
 global.Course = require('./Course');
+var mining = require('./mining');
+var express = require('express');
+var app = express();
 
-//require('./mining')('2017F');
-
-var http = require('http');
-var server = http.createServer(function(req, res) {
-	res.writeHead(200, { 'Content-Type': 'text/plain' });
-	res.end('Hello world!');
+app.get('/', function(req, res) {
+    res.send('Hello World!');
 });
-server.listen(process.env.PORT);
+
+app.get('/mine/:term', function(req, res) {
+    var term = req.params.term;
+    if(['2017A', '2017B', '2017F'].indexOf(term) > -1) {
+        mining(term);
+        res.send('Mining');
+    }
+});
+
+var port = 3000;
+if (process.env.PORT) port = process.env.PORT;
+app.listen(port, function() {
+    console.log('Example app listening on port ' + port + '!');
+});
