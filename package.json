@@ -13,6 +13,7 @@
     "cheerio": "^0.22.0",
     "express": "^4.15.2",
     "mongoose": "^4.9.2",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "route-cache": "^0.4.1"
   }
 }

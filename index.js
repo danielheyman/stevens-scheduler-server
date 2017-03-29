@@ -20,6 +20,7 @@ global.Course = require('./Course');
 var mining = require('./mining');
 var express = require('express');
 var app = express();
+var routeCache = require('route-cache');
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -27,11 +28,14 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/terms', function(req, res) {  
-    req.pipe(request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms')).pipe(res);
+app.get('/terms', routeCache.cacheSeconds(60), function(req, res) {  
+    request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms', function(error, response, body) {
+        if (error) return;
+        res.send(body);
+    });
 });
 
-app.get('/:term', function(req, res) {  
+app.get('/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {  
     req.pipe(request('https://web.stevens.edu/scheduler/core/core.php?cmd=getxml&term=' + req.params.term)).pipe(res);
 });
 
