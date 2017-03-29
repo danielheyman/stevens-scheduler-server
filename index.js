@@ -27,11 +27,19 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.get('/terms', function(req, res) {  
+    req.pipe(request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms')).pipe(res);
+});
+
+app.get('/:term', function(req, res) {  
+    req.pipe(request('https://web.stevens.edu/scheduler/core/core.php?cmd=getxml&term=' + req.params.term)).pipe(res);
+});
+
 app.get('/', function(req, res) {
     res.send('Hello World!');
 });
 
-app.get('/mine/:term', function(req, res) {
+/*app.get('/mine/:term', function(req, res) {
     var term = req.params.term;
     if(['2017A', '2017B', '2017F'].indexOf(term) > -1) {
         mining(term);
@@ -57,7 +65,7 @@ app.get('/:term', function(req, res) {
             return course;
         }));
     });
-});
+});*/
 
 var port = 3000;
 if (process.env.PORT) port = process.env.PORT;
