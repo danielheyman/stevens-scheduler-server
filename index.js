@@ -36,7 +36,10 @@ app.get('/terms', routeCache.cacheSeconds(60), function(req, res) {
 });
 
 app.get('/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {  
-    req.pipe(request('https://web.stevens.edu/scheduler/core/core.php?cmd=getxml&term=' + req.params.term)).pipe(res);
+    request('https://web.stevens.edu/scheduler/core/core.php?cmd=getxml&term=' + req.params.term, function(error, response, body) {
+        if (error) return;
+        res.send(body);
+    });
 });
 
 app.get('/', function(req, res) {
