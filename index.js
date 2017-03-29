@@ -28,7 +28,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/terms', routeCache.cacheSeconds(60), function(req, res) {  
+app.get('/terms', routeCache.cacheSeconds(60 * 10), function(req, res) {  
     request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms', function(error, response, body) {
         if (error) return;
         res.send(body);
