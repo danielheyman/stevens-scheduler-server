@@ -29,15 +29,38 @@ app.use(function(req, res, next) {
 });
 
 app.get('/terms', routeCache.cacheSeconds(60 * 10), function(req, res) {  
-    request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms', function(error, response, body) {
-        if (error) return;
+    var findTerms = function(cb) {
+        request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms', function(error, response, body) {
+            if (error) {
+                setTimeout(function() {
+                    findTerms(cb);
+                }, 500);
+                return;
+            }
+            cb(body);
+        });
+    };
+    
+    findTerms(function(body) {
         res.send(body);
     });
 });
 
+
 app.get('/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {  
-    request('https://web.stevens.edu/scheduler/core/core.php?cmd=getxml&term=' + req.params.term, function(error, response, body) {
-        if (error) return;
+    var findTerm = function(cb) {
+        request('https://web.stevens.edu/scheduler/core/core.php?cmd=getxml&term=' + req.params.term, function(error, response, body) {
+            if (error) {
+                setTimeout(function() {
+                    findTerm(cb);
+                }, 500);
+                return;
+            }
+            cb(body);
+        });
+    };
+    
+    findTerm(function(body) {
         res.send(body);
     });
 });
