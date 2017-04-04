@@ -7,9 +7,9 @@ global.mongoose = require('mongoose');
 if (process.env.APP_CONFIG) {
     var config = JSON.parse(process.env.APP_CONFIG);
     var mongoPassword = 'Daniel1011';
-    mongoose.connect("mongodb://" + config.mongo.user + ":" + mongoPassword + "@" + config.mongo.hostString);
+    //mongoose.connect("mongodb://" + config.mongo.user + ":" + mongoPassword + "@" + config.mongo.hostString);
 } else {
-    mongoose.connect('mongodb://localhost/stevens-scheduler');
+    //mongoose.connect('mongodb://localhost/stevens-scheduler');
 }
 global.db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -19,6 +19,7 @@ db.once('open', function() {
 global.Course = require('./Course');
 var mining = require('./mining');
 var express = require('express');
+var async = require('async');
 var app = express();
 var routeCache = require('route-cache');
 
