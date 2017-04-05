@@ -15,6 +15,7 @@
     "express": "^4.15.2",
     "mongoose": "^4.9.2",
     "request": "^2.81.0",
-    "route-cache": "^0.4.1"
+    "route-cache": "^0.4.1",
+    "xml2js": "^0.4.17"
   }
 }
