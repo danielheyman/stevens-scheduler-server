@@ -65,7 +65,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/p/terms', routeCache.cacheSeconds(60 * 10), function(req, res) {
+app.get('/p/terms', routeCache.cacheSeconds(60 * 15), function(req, res) {
     var findTerms = function() {
         request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms', function(error, response, body) {
             if (error || response.statusCode != 200) {
@@ -89,8 +89,19 @@ app.get('/p/terms', routeCache.cacheSeconds(60 * 10), function(req, res) {
     findTerms();
 });
 
+app.get('/p/desc/:course', function(req, res) {
+    var parsedName = req.params.course.match(/\w+ \d+/);
+    var description = parsedName ? courseDescriptions[parsedName[0]] : null;
+    if(description) {
+        res.send(description.split("Prerequisites")[0].split("Cross-listed")[0].split("Corequisites")[0]);
+    }
+    else {
+        res.send('No description found.');
+    }
+});
 
-app.get('/p/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {
+
+app.get('/p/:term', routeCache.cacheSeconds(60 * 15), function(req, res) {
     if(terms.length && terms.indexOf(req.params.term) === -1) return res.send("Term not found!");
     
     var findTerm = function() {
@@ -103,7 +114,6 @@ app.get('/p/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {
                     return setTimeout(findTerm, 500);
                 }
                 result = result.Semester.Course.map(function(c) {
-                    var parsedName = c.$.Section.match(/\w+ \d+/);
                     var obj = {
                         section: c.$.Section,
                         title: c.$.Title,
@@ -113,7 +123,6 @@ app.get('/p/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {
                         currentEnrollment: c.$.CurrentEnrollment,
                         status: c.$.Status,
                         instructor: c.$.Instructor1,
-                        description: parsedName ? courseDescriptions[parsedName[0]] : null,
                         daysTimeLocation: !c.Meeting ? [] : c.Meeting.map(function(m) {
                             return {
                                 day: m.$.Day,
@@ -152,7 +161,6 @@ app.get('/p/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {
                         });
                     }
                     
-                    if(obj.description) obj.description = obj.description.split("Prerequisites")[0].split("Cross-listed")[0].split("Corequisites")[0];
                     return obj;
                 });
                 
