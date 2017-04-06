@@ -104,7 +104,7 @@ app.get('/p/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {
                 }
                 result = result.Semester.Course.map(function(c) {
                     var parsedName = c.$.Section.match(/\w+ \d+/);
-                    return {
+                    var obj = {
                         section: c.$.Section,
                         title: c.$.Title,
                         callNumber: c.$.CallNumber,
@@ -124,8 +124,36 @@ app.get('/p/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {
                                 room: m.$.Room,
                                 activity: m.$.activity
                             };
-                        })
+                        }),
+                        prereqs: "",
+                        coreqs: ""
                     };
+                    
+                    if(c.Requirement) {
+                        c.Requirement.forEach(function(m) {
+                            if((obj.prereqs === "" && m.$.Control == 'R&') || m.$.Control == 'RQ') {
+                                if(obj.prereqs !== "") obj.prereqs += " or " + m.$.Value1;
+                                else obj.prereqs += "Prerequisite: " + m.$.Value1;
+                                if(m.$.Value2) obj.prereqs += " or " + m.$.Value2;
+                            }
+                            else if(m.$.Control == 'R&') {
+                                obj.prereqs += "<br>--- and " + m.$.Value1;
+                                if(m.$.Value2) obj.prereqs += " or " + m.$.Value2;
+                            }
+                            else if((obj.coreqs === "" && ['N&', 'CS', 'CA'].indexOf(m.$.Control) !== -1) || m.$.Control == 'NQ') {
+                                if(obj.coreqs !== "") obj.coreqs += " or " + m.$.Value1;
+                                else obj.coreqs += "Corequisite: " + m.$.Value1;
+                                if(m.$.Value2) obj.coreqs += " or " + m.$.Value2;
+                            }
+                            else if(['N&', 'CS', 'CA'].indexOf(m.$.Control) !== -1) {
+                                obj.coreqs += "<br>--- and " + m.$.Value1;
+                                if(m.$.Value2) obj.coreqs += " or " + m.$.Value2;
+                            }
+                        });
+                    }
+                    
+                    if(obj.description) obj.description = obj.description.split("Prerequisites")[0].split("Cross-listed")[0].split("Corequisites")[0];
+                    return obj;
                 });
                 
                 res.json(result);
