@@ -49,7 +49,7 @@ var generateCourseDescriptions = function() {
 //generateCourseDescriptions();
 
 var courseDescriptions = {};
-var terms = ['2017F'];
+var terms = ['2018S'];
 
 fs.readFile('courseDescriptions.json', 'utf8', function readFileCallback(err, data) {
     if (err) {
@@ -141,8 +141,8 @@ app.get('/p/:term', routeCache.cacheSeconds(60 * 15), function(req, res) {
                     if(c.Requirement) {
                         c.Requirement.forEach(function(m) {
                             if((obj.prereqs === "" && m.$.Control == 'R&') || m.$.Control == 'RQ') {
-                                if(obj.prereqs !== "") obj.prereqs += " or " + m.$.Value1;
-                                else obj.prereqs += "Prerequisite: " + m.$.Value1;
+                                if(obj.prereqs !== "") obj.prereqs += "<br>or ";
+                                obj.prereqs += "Prerequisite: " + m.$.Value1;
                                 if(m.$.Value2) obj.prereqs += " or " + m.$.Value2;
                             }
                             else if(m.$.Control == 'R&') {
