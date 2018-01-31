@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "echo https://console.run.pivotal.io/ && cf push stevens--scheduler"
+  },
+  "engines": {
+    "node": "9.3.x"
   },
   "author": "",
   "license": "ISC",
