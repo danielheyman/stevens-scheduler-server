@@ -1,4 +1,4 @@
-global.request = require("request");
+/*global.request = require("request");
 global.cheerio = require('cheerio');
 request = request.defaults({
     jar: true
@@ -7,9 +7,9 @@ global.mongoose = require('mongoose');
 if (process.env.APP_CONFIG) {
     var config = JSON.parse(process.env.APP_CONFIG);
     var mongoPassword = 'Daniel1011';
-    //mongoose.connect("mongodb://" + config.mongo.user + ":" + mongoPassword + "@" + config.mongo.hostString);
+    mongoose.connect("mongodb://" + config.mongo.user + ":" + mongoPassword + "@" + config.mongo.hostString);
 } else {
-    //mongoose.connect('mongodb://localhost/stevens-scheduler');
+    mongoose.connect('mongodb://localhost/stevens-scheduler');
 }
 global.db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -17,7 +17,8 @@ db.once('open', function() {
     console.log('connected to db');
 });
 global.Course = require('./Course');
-var mining = require('./mining');
+var mining = require('./mining');*/
+var request = require("request");
 var express = require('express');
 var async = require('async');
 var app = express();
@@ -172,7 +173,7 @@ app.get('/p/:term', routeCache.cacheSeconds(60 * 15), function(req, res) {
     findTerm();
 });
 
-
+/*
 app.get('/terms', routeCache.cacheSeconds(60 * 10), function(req, res) {
     var findTerms = function(cb) {
         request('https://web.stevens.edu/scheduler/core/core.php?cmd=terms', function(error, response, body) {
@@ -207,7 +208,7 @@ app.get('/:term', routeCache.cacheSeconds(60 * 10), function(req, res) {
     findTerm(function(body) {
         res.send(body);
     });
-});
+});*/
 
 app.get('/', function(req, res) {
     res.send('Hello World!');
