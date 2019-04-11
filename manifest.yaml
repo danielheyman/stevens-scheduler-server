@@ -1,0 +1,5 @@
+---
+applications:
+- name: stevens-scheduler
+  disk_quota: 150M
+  memory: 80M

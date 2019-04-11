@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "deploy": "echo https://console.run.pivotal.io/ && cf push stevens--scheduler"
+    "deploy": "echo https://console.run.pivotal.io/ && cf push"
   },
   "engines": {
-    "node": "9.3.x"
+    "node": "10.x"
   },
   "author": "",
   "license": "ISC",
